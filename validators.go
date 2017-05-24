@@ -5,10 +5,7 @@ import (
 	"fmt"
 )
 
-	// return func(out, err string, sucess bool) error {
-		
-	// }
-
+type validator func(stdout string, stderr string, success bool) error
 
 func ValidStdout(str string) validator {
 	return func(out, err string, success bool) error {
