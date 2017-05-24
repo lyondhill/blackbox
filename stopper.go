@@ -19,7 +19,7 @@ func (sw stopWriter) Write(p []byte) (n int, err error) {
 		if sw.cmd != nil && sw.cmd.execCmd != nil && sw.cmd.execCmd.Process != nil {
 			// add some checks so we dont panic
 			if runtime.GOOS == "windows" {
-				sw.cmd.writer.Write([]byte("^C"))
+				sw.cmd.writer.Write([]byte(`^C`))
 			} else {
 				sw.cmd.execCmd.Process.Signal(os.Interrupt)
 			}
