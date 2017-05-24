@@ -19,7 +19,6 @@ type Command struct {
 	execCmd *exec.Cmd
 	validators []validator
 	stoppers []stopper
-	writer *io.PipeWriter
 }
 
 func Cmd(name string, args ...string) *Command {
@@ -47,9 +46,6 @@ func (cmd *Command) Run() error {
 		errwriter = append(errwriter, sw)
 	}
 
-	inputReader, inputWriter := io.Pipe()
-	cmd.writer = inputWriter
-
 	if !Quiet {
 		outWriter = append(outWriter, os.Stdout)
 		errwriter = append(errwriter, os.Stderr)
@@ -62,14 +58,33 @@ func (cmd *Command) Run() error {
 	// setup the reader and write
 	cmd.execCmd.Stdout = outMulti
 	cmd.execCmd.Stderr = errMulti
-	cmd.execCmd.Stdin  = inputReader
-
-	go func() {
-    	io.Copy(cmd.writer, os.Stdin)
-	}()
+	cmd.execCmd.Stdin  = os.Stdin
 
 	// run the command and catch any execution errors
-	cmd.execCmd.Run()
+	cmd.execCmd.Run()	
+	// if err != nil {
+	// 	return fmt.Errorf("failed to exec: %s", err)
+	// }
+
+	// execDone := make(chan error, 1)
+	// go func() {
+ //    	execDone <- cmd.execCmd.Wait()
+	// }()
+
+	// for {
+	// 	select {
+	// 	case <-cmd.done:
+	// 		// a stopper triggered a stop here
+	// 		// kill the command
+	// 		cmd.execCmd.Process.Kill()
+	// 	case err = <-execDone:
+	// 		break
+	// 	}		
+	// }
+
+	// if err != nil {
+	// 	return fmt.Errorf("failed on wait: %s", err)
+	// }
 
 	// create a list of errors that will display more clearly
 	errors := errorList{

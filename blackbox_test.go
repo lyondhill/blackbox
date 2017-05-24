@@ -29,8 +29,7 @@ func TestStopper(t *testing.T) {
 	cmd.AddStopper(StopOnOutput("Tasks:"))
 	cmd.AddValidator(ValidExit())
 	err := cmd.Run()
-	if err == nil {
-		t.Errorf("should have failed because of stdout mismatch")
-	}	
-
+	if err != nil {
+		t.Error(err)
+	}
 }
