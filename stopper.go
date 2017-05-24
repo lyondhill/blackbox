@@ -4,6 +4,7 @@ import (
 	"strings"
 	"os"
 	"runtime"
+	"fmt"
 )
 
 type stopper func(data string) bool
@@ -20,7 +21,8 @@ func (sw stopWriter) Write(p []byte) (n int, err error) {
 			// add some checks so we dont panic
 			if runtime.GOOS == "windows" {
 				pipe, err := sw.cmd.execCmd.StdinPipe()
-				if err != nil {
+				fmt.Println(err)
+				if err == nil {
 					pipe.Write([]byte(`^C`))
 				}
 			} else {
