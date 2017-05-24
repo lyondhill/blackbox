@@ -64,9 +64,9 @@ func (cmd *Command) Run() error {
 
 	// run the command and catch any execution errors
 	err := cmd.execCmd.Run()	
-	if err != nil {
-		return fmt.Errorf("failed to exec: %s", err)
-	}
+	// if err != nil {
+	// 	return fmt.Errorf("failed to exec: %s", err)
+	// }
 
 	// execDone := make(chan error, 1)
 	// go func() {
