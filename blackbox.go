@@ -19,7 +19,7 @@ type Command struct {
 	execCmd *exec.Cmd
 	validators []validator
 	stoppers []stopper
-	done chan struct{}
+	writer *io.PipeWriter
 }
 
 func Cmd(name string, args ...string) *Command {
@@ -27,7 +27,6 @@ func Cmd(name string, args ...string) *Command {
 		execCmd: exec.Command(name, args...),
 		validators: []validator{},
 		stoppers: []stopper{},
-		done: make(chan struct{}, 1),
 	}
 }
 
@@ -48,6 +47,9 @@ func (cmd *Command) Run() error {
 		errwriter = append(errwriter, sw)
 	}
 
+	inputReader, inputWriter := io.Pipe()
+	cmd.writer = inputWriter
+
 	if !Quiet {
 		outWriter = append(outWriter, os.Stdout)
 		errwriter = append(errwriter, os.Stderr)
@@ -60,7 +62,7 @@ func (cmd *Command) Run() error {
 	// setup the reader and write
 	cmd.execCmd.Stdout = outMulti
 	cmd.execCmd.Stderr = errMulti
-	cmd.execCmd.Stdin  = os.Stdin
+	cmd.execCmd.Stdin  = inputReader
 
 	// run the command and catch any execution errors
 	cmd.execCmd.Run()	
@@ -69,9 +71,9 @@ func (cmd *Command) Run() error {
 	// }
 
 	// execDone := make(chan error, 1)
-	// go func() {
- //    	execDone <- cmd.execCmd.Wait()
-	// }()
+	go func() {
+    	io.Copy(cmd.writer, os.Stdin)
+	}()
 
 	// for {
 	// 	select {
