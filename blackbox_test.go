@@ -23,3 +23,14 @@ func TestBadRun(t *testing.T) {
 	}
 	
 }
+
+func TestStopper(t *testing.T) {
+	cmd := Cmd("top", "-b")
+	cmd.AddStopper(StopOnOutput("Tasks:"))
+	cmd.AddValidator(ValidExit())
+	err := cmd.Run()
+	if err == nil {
+		t.Errorf("should have failed because of stdout mismatch")
+	}	
+
+}

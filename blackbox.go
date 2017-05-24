@@ -63,30 +63,30 @@ func (cmd *Command) Run() error {
 	cmd.execCmd.Stdin  = os.Stdin
 
 	// run the command and catch any execution errors
-	err := cmd.execCmd.Start()	
+	err := cmd.execCmd.Run()	
 	if err != nil {
 		return fmt.Errorf("failed to exec: %s", err)
 	}
 
-	execDone := make(chan error, 1)
-	go func() {
-    	execDone <- cmd.execCmd.Wait()
-	}()
+	// execDone := make(chan error, 1)
+	// go func() {
+ //    	execDone <- cmd.execCmd.Wait()
+	// }()
 
-	for {
-		select {
-		case <- cmd.done:
-			// a stopper triggered a stop here
-			// kill the command
-			cmd.execCmd.Process.Kill()
-		case err = <-execDone:
-			break
-		}		
-	}
+	// for {
+	// 	select {
+	// 	case <-cmd.done:
+	// 		// a stopper triggered a stop here
+	// 		// kill the command
+	// 		cmd.execCmd.Process.Kill()
+	// 	case err = <-execDone:
+	// 		break
+	// 	}		
+	// }
 
-	if err != nil {
-		return fmt.Errorf("failed on wait: %s", err)
-	}
+	// if err != nil {
+	// 	return fmt.Errorf("failed on wait: %s", err)
+	// }
 
 	// create a list of errors that will display more clearly
 	errors := errorList{
@@ -112,6 +112,7 @@ func (cmd *Command) Run() error {
 }
 
 func (cmd *Command) AddStopper(stop stopper) {
+	cmd.stoppers = append(cmd.stoppers, stop)
 	
 }
 

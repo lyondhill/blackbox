@@ -14,7 +14,10 @@ type stopWriter struct {
 
 func (sw stopWriter) Write(p []byte) (n int, err error) {
 	if sw.stop(string(p)) {
-		close(sw.cmd.done)
+		if sw.cmd != nil && sw.cmd.execCmd != nil && sw.cmd.execCmd.Process != nil {
+			// add some checks so we dont panic
+			sw.cmd.execCmd.Process.Kill()		
+		}
 	}
 
 	// we dont ever want the stop writer to fail
