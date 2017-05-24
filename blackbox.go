@@ -64,31 +64,12 @@ func (cmd *Command) Run() error {
 	cmd.execCmd.Stderr = errMulti
 	cmd.execCmd.Stdin  = inputReader
 
-	// run the command and catch any execution errors
-	cmd.execCmd.Run()	
-	// if err != nil {
-	// 	return fmt.Errorf("failed to exec: %s", err)
-	// }
-
-	// execDone := make(chan error, 1)
 	go func() {
     	io.Copy(cmd.writer, os.Stdin)
 	}()
 
-	// for {
-	// 	select {
-	// 	case <-cmd.done:
-	// 		// a stopper triggered a stop here
-	// 		// kill the command
-	// 		cmd.execCmd.Process.Kill()
-	// 	case err = <-execDone:
-	// 		break
-	// 	}		
-	// }
-
-	// if err != nil {
-	// 	return fmt.Errorf("failed on wait: %s", err)
-	// }
+	// run the command and catch any execution errors
+	cmd.execCmd.Run()
 
 	// create a list of errors that will display more clearly
 	errors := errorList{
