@@ -1,6 +1,7 @@
 package blackbox
 
 import (
+	"os"
 	"strings"
 )
 
@@ -16,7 +17,7 @@ func (sw stopWriter) Write(p []byte) (n int, err error) {
 	if sw.stop(string(p)) {
 		if sw.cmd != nil && sw.cmd.execCmd != nil && sw.cmd.execCmd.Process != nil {
 			// add some checks so we dont panic
-			sw.cmd.execCmd.Process.Kill()		
+			sw.cmd.execCmd.Process.Signal(os.Interrupt)		
 		}
 	}
 

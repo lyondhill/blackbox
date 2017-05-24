@@ -46,7 +46,7 @@ func ValidExit() validator {
 func validNotOutput(str string) validator {
 	return func(out, err string, success bool) error {
 		if strings.Contains(out, str) || strings.Contains(err, str) {
-			return fmt.Errorf("fount '%s' in output", str)
+			return fmt.Errorf("found '%s' in output", str)
 		}
 		return nil
 	}	
