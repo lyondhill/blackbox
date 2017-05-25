@@ -6,7 +6,7 @@ import  (
 	"fmt"
 )
 
-func killChild(p os.Process) error {
+func killChild(p *os.Process) error {
 	var kernel32 = syscall.NewLazyDLL("Kernel32.dll")
 	var freeConsole = kernel32.NewProc("FreeConsole")
 	var attachConsole = kernel32.NewProc("AttachConsole")
