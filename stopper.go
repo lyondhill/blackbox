@@ -2,7 +2,6 @@ package blackbox
 
 import (
 	"strings"
-	"os"
 )
 
 type stopper func(data string) bool
@@ -28,7 +27,7 @@ func (sw stopWriter) Write(p []byte) (n int, err error) {
 		if sw.cmd != nil && sw.cmd.execCmd != nil && sw.cmd.execCmd.Process != nil {
 			// add some checks so we dont panic
 
-			killChild(Process)
+			killChild(sw.cmd.execCmd.Process)
 		}
 	}
 
