@@ -12,6 +12,7 @@ func killChild(p *os.Process) error {
 	var attachConsole = kernel32.NewProc("AttachConsole")
 	var setConsoleCtrlHandler = kernel32.NewProc("SetConsoleCtrlHandler")
 	var generateConsoleCtrlEvent = kernel32.NewProc("GenerateConsoleCtrlEvent")
+
 	// Close current console
 	if r, _, err := freeConsole.Call(); r == 0 {
 		return fmt.Errorf("Can't FreeConsole. Error code %v", err)
