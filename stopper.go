@@ -13,11 +13,22 @@ type stopWriter struct {
 }
 
 
+// func terminateProcess(pid, exitcode int) error {
+// 	h, e := syscall.OpenProcess(syscall.PROCESS_TERMINATE, false, uint32(pid))
+// 	if e != nil {
+// 		return NewSyscallError("OpenProcess", e)
+// 	}
+// 	defer syscall.CloseHandle(h)
+// 	e = syscall.TerminateProcess(h, uint32(exitcode))
+// 	return NewSyscallError("TerminateProcess", e)
+// }
+
 func (sw stopWriter) Write(p []byte) (n int, err error) {
 	if sw.stop(string(p)) {
 		if sw.cmd != nil && sw.cmd.execCmd != nil && sw.cmd.execCmd.Process != nil {
 			// add some checks so we dont panic
-			sw.cmd.execCmd.Process.Signal(os.Interrupt)
+
+			killChild(Process)
 		}
 	}
 
